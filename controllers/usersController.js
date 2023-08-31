@@ -18,7 +18,18 @@ const SignUp = async (request, response) => {
         // const token = jwt.sign({ username: user.username }, 'your-jwt-secret');
         // response.cookie('token', token);
 
-        response.sendStatus(200)/*redirect("/")*/
+        const exp = Date.now() + 1000*60*60*2
+        const token = jwt.sign({sub: user._id, exp}, process.env.DASECRET)
+    
+        response.cookie("Authentication", token, {
+            expires: new Date(exp),
+            httpOnly: true,
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production"
+        })
+        response.sendStatus(200)
+
+        // response.sendStatus(200)/*redirect("/")*/
 
     
     } catch(err){
@@ -44,8 +55,10 @@ const SignIn = async (request, response) => {
         const passmatch = bcrypt.compareSync(password, user.password)
         if(!passmatch) return response.sendStatus(401)
     
-        if (user.role === "user") {const exp = Date.now() + 1000*60*60*2}
-        else {const exp = Date.now() + 1000*60*30}
+        var exp
+
+        if (user.role === "user") {exp = Date.now() + 1000*60*60*2}
+        else {exp = Date.now() + 1000*60*30}
         
         const token = jwt.sign({sub: user._id, exp}, process.env.DASECRET)
     

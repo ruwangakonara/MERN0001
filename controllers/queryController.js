@@ -92,7 +92,7 @@ const DeleteQuery = async (req, res) => {
 
 module.exports = {
     FetchQueries,
-    UpdateQ,
+    ArchiveQuery,
     DeleteQuery,
     CreateQuery
 }

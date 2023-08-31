@@ -29,6 +29,23 @@ const FetchPosts = async (request, response) => {
 
 }
 
+
+const FetchPost = async (request, response) => {
+
+    try{
+        const post = await Post.findById(req.params.id);
+        response.status(200).json({post});
+
+    }catch(err){
+
+        console.log(err)
+        response.status(500).json({message: "Unable to load Posts"})
+
+    }
+
+
+}
+
 const UploadPost = async (request, response) => {
 
   
@@ -160,6 +177,7 @@ module.exports = {
     CreateComment,
     GetComments,
     DeleteComment,
-    UpdateComment
+    UpdateComment,
+    FetchPost
 
 }

@@ -115,6 +115,6 @@ app.get("/queries", requireAuth, isAdmin, QueryController.FetchQueries)
 
 app.post("/queries", requireAuth, QueryController.CreateQuery)
 
-app.put("/queries:id", requireAuth, isAdmin, QueryController.UpdateQ)
+app.put("/queries:id", requireAuth, isAdmin, QueryController.ArchiveQuery)
 
 app.delete("/queries/:id", requireAuth, isAdmin, QueryController.DeleteQuery)
