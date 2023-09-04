@@ -55,7 +55,7 @@ const SignIn = async (request, response) => {
         const passmatch = bcrypt.compareSync(password, user.password)
         if(!passmatch) return response.sendStatus(401)
     
-        var exp
+        var exp;
 
         if (user.role === "user") {exp = Date.now() + 1000*60*60*2}
         else {exp = Date.now() + 1000*60*30}
@@ -79,21 +79,54 @@ const SignIn = async (request, response) => {
  
 }
 
-function checkAuth(request, response) {
+// function checkAuth(request, response) {
     
+//     try{
+
+//         console.log(request.user)
+//         response.status(200).send()
+
+//     } catch(err){
+
+//         console.log(err)
+//         response.status(400).send()
+
+//     }
+
+// }
+
+async function checkAuth(request, response) {
+
     try{
+        const token = request.cookies.Authentication
 
-        console.log(request.user)
-        response.sendStatus(200)
+        if(!token) return response.sendStatus(401)
 
+        const decoded = jwt.verify(token, process.env.DASECRET)
+
+        if(Date.now() > decoded.exp) return response.sendStatus(401)
+
+        try{
+            const user = await User.findById(decoded.sub)
+            
+            if (!user) {
+                return response.sendStatus(401);
+            }
+        }
+        catch(err){
+            console.log(err.message)
+            return response.sendStatus(401)
+        }
     } catch(err){
 
-        console.log(err)
-        response.sendStatus(400)
+        console.log(err.message)
+
+        response.sendStatus(401)
 
     }
 
 }
+
 
 function SignOut(request, response) {
 

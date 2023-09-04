@@ -7,7 +7,7 @@ const Post = require("../models/post")
 const store = multer.diskStorage({
     destination: 'uploadedpostimgs/',
     filename: function (req, file, cb) {
-      cb(null, file.originalname + Date.now());
+      cb(null, file.originalname);
     },
 });
 
@@ -33,7 +33,7 @@ const FetchPosts = async (request, response) => {
 const FetchPost = async (request, response) => {
 
     try{
-        const post = await Post.findById(req.params.id);
+        const post = await Post.findById(req.params.postID);
         response.status(200).json({post});
 
     }catch(err){
@@ -54,7 +54,7 @@ const UploadPost = async (request, response) => {
         const { coursename, unitname, description} = request.body
         const post = new Post({ filename, coursename, unitname, description });
         await post.save();
-        response.status(200).json({ message: `Post with image ${post.filename} uploaded successfully` });
+        response.status(200).json({ message: `Post with image ${post.filename} uploaded successfully`, postid:post._id});
     }catch(err){
         console.log(err)
         response.status(500).json({message: "Unable to upload Posts"})

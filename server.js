@@ -50,7 +50,7 @@ if(process.env.NODE_ENV != "production"){
 app.post("/signup", UserController.SignUp)
 app.post("/signin", UserController.SignIn)
 app.get("/signout", UserController.SignOut)
-app.get("/check-auth", requireAuth, UserController.checkAuth)
+app.get("/check-auth", UserController.checkAuth)
 
 
 // app.post("/signin", async (request, response) => {
@@ -81,9 +81,9 @@ app.get("/announcements", AnnouncementController.FetchAnnouncements)
 
 app.get("/announcements/:id", AnnouncementController.FetchAnnouncement)
 
-app.put("/announcements/:id",requireAuth, AnnouncementController.UpdateAnnouncement)
+app.put("/announcements/:id",requireAuth, isAdmin, AnnouncementController.UpdateAnnouncement)
 
-app.post("/announcements",requireAuth, AnnouncementController.CreateAnnouncement)
+app.post("/announcements",requireAuth, isAdmin, AnnouncementController.CreateAnnouncement)
 
 app.delete("/announcements/:id",requireAuth, isAdmin, AnnouncementController.DeleteAnnouncement)
 
@@ -96,25 +96,29 @@ app.listen(process.env.PORT)
 
 app.get('/posts', PostController.FetchPosts);
 
+app.get("/posts/:postID", validatePost, PostController.GetComments)
+
 app.post('/posts/upload',requireAuth, PostController.uploader.single('image'), PostController.UploadPost);
 
-app.delete('/posts/:id',requireAuth, isAdmin, PostController.DeletePost);
+app.delete('/posts/:posdID',requireAuth, isAdmin, PostController.DeletePost);
 
-app.post("posts/:postID/comments", requireAuth, validatePost, PostController.CreateComment)
+app.post("/posts/:postID/comments", requireAuth, validatePost, PostController.CreateComment)
 
-app.get("posts/:postID/comments", requireAuth, validatePost, PostController.GetComments)
+app.get("/posts/:postID/comments", requireAuth, validatePost, PostController.GetComments)
 
-app.delete("posts/:postID/comments/:commentID", requireAuth, validatePost, PostController.DeleteComment)
+app.delete("/posts/:postID/comments/:commentID", requireAuth, validatePost, PostController.DeleteComment)
 
-app.put("posts/:postID/comments/:commentID", requireAuth, validatePost, PostController.UpdateComment)
+app.put("/posts/:postID/comments/:commentID", requireAuth, validatePost, PostController.UpdateComment)
 
 
 //
 
 app.get("/queries", requireAuth, isAdmin, QueryController.FetchQueries)
 
-app.post("/queries", requireAuth, QueryController.CreateQuery)
+app.get("/queries/:id", requireAuth, isAdmin, QueryController.FetchQuery)
 
-app.put("/queries:id", requireAuth, isAdmin, QueryController.ArchiveQuery)
+app.post("/queries", QueryController.CreateQuery)
+
+app.put("/queries/:id", requireAuth, isAdmin, QueryController.ArchiveQuery)
 
 app.delete("/queries/:id", requireAuth, isAdmin, QueryController.DeleteQuery)

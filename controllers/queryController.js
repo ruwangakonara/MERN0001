@@ -17,6 +17,22 @@ const FetchQueries = async (request, response) => {
 
 }
 
+const FetchQuery = async (request, response) => {
+
+    try{
+        const queryID = request.params.id
+        const query = await Query.findById(queryID)
+        response.status(200).json({query})
+
+    } catch(err) {
+        console.log(err)
+        response.sendStatus(500)
+
+    }
+
+    // response.json(announcements)
+
+}
 
 const ArchiveQuery =  async (request, response) => {
 
@@ -94,5 +110,6 @@ module.exports = {
     FetchQueries,
     ArchiveQuery,
     DeleteQuery,
-    CreateQuery
+    CreateQuery,
+    FetchQuery
 }
