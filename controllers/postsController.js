@@ -33,7 +33,7 @@ const FetchPosts = async (request, response) => {
 const FetchPost = async (request, response) => {
 
     try{
-        const post = await Post.findById(req.params.postID);
+        const post = await Post.findById(request.params.postID);
         response.status(200).json({post});
 
     }catch(err){
@@ -64,16 +64,21 @@ const UploadPost = async (request, response) => {
 
 const DeletePost = async (reque, resp) => {
     
-    const id = reque.params.id;
+    const id = reque.params.postID;
 
     const post = await Post.findById(id)
 
     const filepath = path.join(__dirname, "../uploadedpostimgs", post.filename)
     fs.unlinkSync(filepath)
 
+    try{
+        await Post.findByIdAndDelete(id);
+        resp.status(200).json({ message: 'Post deleted successfully' });    
+    }catch(err){
+        console.log(err)
+        resp.status(500).json({ message: "Could not delete" });    
 
-    await Post.findByIdAndDelete(id);
-    resp.json({ message: 'Post deleted successfully' });
+    }
     
 }
 
@@ -82,7 +87,7 @@ const CreateComment =  async (reque, respo) => {
     try {
         const newComment = {
             text: reque.body.text,
-            author: reque.user._id // Assuming you have user authentication
+            author: reque.user._id 
         };
 
         reque.post.comments.push(newComment);

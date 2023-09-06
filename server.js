@@ -9,6 +9,7 @@ const AnnouncementController = require("./controllers/announcementsController")
 const PostController = require("./controllers/postsController")
 const UserController = require("./controllers/usersController")
 const QueryController = require("./controllers/queryController")
+const CommentController = require("./controllers/commentsController")
 
 const requireAuth = require("./middleware/requireAuth")
 const isAdmin = require("./middleware/isAdmin")
@@ -30,7 +31,7 @@ app.use(cors(
         credentials: true
     }
 ))
-app.use('/uploadedppostimgs', express.static(path.join(__dirname, 'uploadedppostimgs')));
+app.use('/uploadedpostimgs', express.static(path.join(__dirname, 'uploadedpostimgs')));
 // app.use(session({
 //     secret: 'dasecretkey',
 //     resave: false,
@@ -96,19 +97,22 @@ app.listen(process.env.PORT)
 
 app.get('/posts', PostController.FetchPosts);
 
-app.get("/posts/:postID", validatePost, PostController.GetComments)
+app.get("/posts/:postID", validatePost, PostController.FetchPost)
 
 app.post('/posts/upload',requireAuth, PostController.uploader.single('image'), PostController.UploadPost);
 
-app.delete('/posts/:posdID',requireAuth, isAdmin, PostController.DeletePost);
+app.delete('/posts/:postID',requireAuth, isAdmin, PostController.DeletePost);
 
-app.post("/posts/:postID/comments", requireAuth, validatePost, PostController.CreateComment)
 
-app.get("/posts/:postID/comments", requireAuth, validatePost, PostController.GetComments)
 
-app.delete("/posts/:postID/comments/:commentID", requireAuth, validatePost, PostController.DeleteComment)
 
-app.put("/posts/:postID/comments/:commentID", requireAuth, validatePost, PostController.UpdateComment)
+app.post("/comments/:postID", requireAuth, validatePost, CommentController.CreateComment)
+
+app.get("/comments/:postID", requireAuth, validatePost, CommentController.GetComments)
+
+app.delete("/comments/:commentID", requireAuth, CommentController.DeleteComment)
+
+app.put("/comments/:commentID", requireAuth, CommentController.UpdateComment)
 
 
 //
