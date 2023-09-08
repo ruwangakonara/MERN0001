@@ -40,6 +40,13 @@ const UpdateAnnouncement =  async (request, response) => {
 
         const id = request.params.id
         const {body, title} = request.body
+
+        // const announcement = await Announcement.findById(id)
+
+        // announcement.body = body
+        // announcement.title = title
+
+        // announcement.save()
     
         await Announcement.findByIdAndUpdate(id, {
             title,

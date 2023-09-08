@@ -69,15 +69,34 @@ const CreateQuery = async (request, response) => {
     try{
         const {qcase, body, name, email} = request.body
 
+        if (request.user !== undefined){
+            const author = request.user._id
+            const authorname = request.user.username
 
-        const query = await Query.create({
-            qcase,
-            body,
-            name,
-            email
-        })
+            const query = await Query.create({
+                qcase,
+                body,
+                name,
+                email,
+                author,
+                authorname
+            })
+            response.status(200).json({query})
+
+        } else {
+            const query = await Query.create({
+                qcase,
+                body,
+                name,
+                email,
+                author: null,
+                authorname: ""
+            })
+            response.status(200).json({query})
+
+        }
+      
     
-        response.status(200).json({query})
     } catch(err){
 
         console.log(err)

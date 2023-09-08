@@ -1,16 +1,20 @@
 const jwt = require("jsonwebtoken")
 const User = require("../models/user")
 
-async function requireAuth(requ, resp, next){
+async function authQuery(requ, resp, next){
 
     try{
         const token = requ.cookies.Authentication
 
-        if(token === undefined) return resp.status(203).json()
+        if(token === undefined) {
+           return next()
+        }
 
         const decoded = jwt.verify(token, process.env.DASECRET)
 
-        if(Date.now() > decoded.exp) return resp.status(203).json()
+        if(Date.now() > decoded.exp) {
+           return next()
+        }
 
         try{
             const user = await User.findById(decoded.sub)
@@ -36,4 +40,4 @@ async function requireAuth(requ, resp, next){
    
 }
 
-module.exports = requireAuth;
+module.exports = authQuery;

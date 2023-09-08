@@ -101,7 +101,7 @@ async function checkAuth(request, response) {
     try{
         const token = request.cookies.Authentication
 
-        if(!token) return response.sendStatus(401)
+        if(!token) return response.status(401).json()
 
         const decoded = jwt.verify(token, process.env.DASECRET)
 
@@ -111,8 +111,13 @@ async function checkAuth(request, response) {
             const user = await User.findById(decoded.sub)
             
             if (!user) {
-                return response.sendStatus(401);
+                return response.status(401).json();
             }
+
+            if( user.role === "admin"){
+                return response.status(206).json({user: user._id})
+            }
+            return response.status(200).json({user: user._id})
         }
         catch(err){
             console.log(err.message)

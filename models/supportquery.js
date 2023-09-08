@@ -22,7 +22,9 @@ const querySchema = new mongoose.Schema({
     archived:{
         type: Boolean,
         default: false,
-    }
+    },
+    authorname: {type: String},
+    author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 })
 
 
