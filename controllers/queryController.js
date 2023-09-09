@@ -39,14 +39,14 @@ const ArchiveQuery =  async (request, response) => {
     try{
 
         const id = request.params.id
-        const {body, qcase, name, email} = request.body
+        const {body, qcase, name, email, archived} = request.body
     
         await Query.findByIdAndUpdate(id, {
             qcase,
             body, 
             name,
             email,
-            archived: true
+            archived
         })
     
         const query = await Query.findById(id)

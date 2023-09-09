@@ -112,7 +112,7 @@ app.put('/posts/:postID',requireAuth, validatePost, PostController.uploader.sing
 
 app.post("/comments/:postID", requireAuth, validatePost, CommentController.CreateComment)
 
-app.get("/comments/:postID", requireAuth, validatePost, CommentController.GetComments)
+app.get("/comments/:postID", validatePost, CommentController.GetComments)
 
 app.delete("/comments/:commentID", requireAuth, CommentController.DeleteComment)
 
