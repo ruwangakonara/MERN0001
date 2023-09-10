@@ -48,7 +48,7 @@ const DeleteComment = async (request, response) => {
         
         const comment = await Comment.findById(commentID)
 
-        if(comment.author !== request.user._id && request.user.role !== "admin") return response.status(403).json({message: "Forbidden"})
+        if(!comment.author.equals(req.user._id) && request.user.role !== "admin") return response.status(403).json({message: "Forbidden"})
 
         await Comment.findOneAndDelete(comment)
 
@@ -69,7 +69,8 @@ const DeleteComments = async (req, res) => {
 
         const post = await Post.findById(postID)
 
-        if(post.author !== req.user._id && req.user.role !== "admin") return res.status(403).json({message: "Forbidden"})
+
+        if(!post.author.equals(req.user._id) && req.user.role !== "admin") return res.status(403).json({message: "Forbidden"})
 
         await Comment.deleteMany({post: postID})
         res.status(201).json({ message: "Comments Deleted" });
@@ -92,7 +93,7 @@ const UpdateComment = async(request, response) => {
         console.log(comment)
         console.log(request.user._id)
 
-        if(comment.author !== request.user._id && request.user.role !== "admin") return response.status(403).json({message: "Forbidden"})
+        if(!comment.author.equals(req.user._id) && request.user.role !== "admin") return response.status(403).json({message: "Forbidden"})
 
         const updatedAt = Date.now()
         const {text} = request.body
